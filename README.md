@@ -9,15 +9,24 @@ TrouveVisage est un mini projet qui permet de détécter des visages dans des im
 
 ## 🛠️ Installer le projet
 
+
+```bash
 git clone https://github.com/SerkOoO/trouvevisage.git
 cd trouvevisage
 pip install -r requirements.txt
 fastapi dev main.py
-(si il y a un problème, essayez "pip install fastapi[standard]" et essayez encore "fastapi dev main.py")
+```
+
+(si il y a un problème faites)
+```bash
+pip install fastapi[standard]
+fastapi dev main.py
+```
 
 Avec Docker 🐳
 ```bash
 docker build -t trouvevisage .
 docker run -p 5000:5000 trouvevisage
+```
 
 @SerkOoO
