@@ -1,0 +1,9 @@
+*.pyc
+*.pyo
+*.pyd
+
+.venv/
+.vscode/
+venv/
+.DS_Store
+Thumbs.db

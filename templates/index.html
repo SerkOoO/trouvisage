@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', path='/css/styles.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+    <title>TrouveVisage</title>
+</head>
+<body>
+
+   <!-- Navbar -->
+   <nav style="background-color: rgb(39, 39, 39) !important; padding: 20px;" class="navbar navbar-expand-lg navbar-light bg-light mb-4 ">
+    <a class="navbar-brand fw-bold text-light " href="#">TrouveVisage</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav ">
+        <li class="nav-item active">
+          <a class="nav-link fw-bold text-light" href="/">Accueil</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="row">
+      <h1 class="mb-3 text-center">Placer une image</h1>
+      <p class="text-center mt-2">TrouveVisage est un mini projet qui consiste à trouver un visage dans votre image</p>
+    </div>
+  </div>
+
+  <div class="container mt-5">
+    <div class="row text-center">
+        <div class="form-group">
+            <label>Image (png/jpg/jpeg)</label>
+            <div class="drag-area" id="drag-area">
+                <p>Drag & Drop your image here or click to upload</p>
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" id="file-input" hidden>
+                <div class="thumb-container"></div>
+                </form>
+            </div>
+        </div>
+        <div class="show-img mt-4">
+          <!-- result image ici -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <script>
+
+    // pas utile
+    document.addEventListener("DOMContentLoaded", function() {
+        const dragArea = document.getElementById("drag-area");
+        const fileInput = document.getElementById("file-input");
+        const thumbContainer = document.querySelector(".thumb-container");
+        const imgContainer = document.querySelector(".show-img");
+
+    
+        dragArea.addEventListener("click", () => fileInput.click());
+    
+        dragArea.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            dragArea.classList.add("dragging");
+        });
+    
+        dragArea.addEventListener("dragleave", () => {
+            dragArea.classList.remove("dragging");
+        });
+    
+        dragArea.addEventListener("drop", (event) => {
+            event.preventDefault();
+            dragArea.classList.remove("dragging");
+            handleFiles(event.dataTransfer.files);
+        });
+    
+        fileInput.addEventListener("change", (event) => {
+            handleFiles(event.target.files);
+        });
+    
+        function handleFiles(files) {
+            // Only handle the first file in the array
+            if (files.length > 0) {
+                validateAndPreviewFile(files[0]);
+            }
+        }
+    
+        // important !
+        function validateAndPreviewFile(file) {
+            const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            const maxSize = 30 * 1024 * 1024; // 30 MB
+    
+            if (!validTypes.includes(file.type)) {
+                alert('Only JPG, JPEG, and PNG files are allowed.');
+                return;
+            }
+    
+            if (file.size > maxSize) {
+                alert('File size exceeds 30 MB.');
+                return;
+            }
+    
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+    
+            reader.onloadend = () => {
+                const img = new Image();
+                img.src = reader.result;
+    
+                img.onload = () => {
+                    const { width, height } = img;
+                    // Clear previous images
+                    thumbContainer.innerHTML = '';
+    
+                    img.classList.add("thumb");
+                    thumbContainer.appendChild(img);
+                };
+            };
+
+          // send image
+          const formData = new FormData();
+          formData.append("file", file);
+
+          fetch("/upload", {
+              method: "POST",
+              body: formData
+            })
+
+          .then(response => response.blob())
+          .then(blob => {
+              const processedImg = document.createElement("img");
+              processedImg.src = URL.createObjectURL(blob);
+              processedImg.classList.add("resultImg");
+              processedImg.classList.add("mt-4");
+
+              const resultTitle = document.createElement("h2");
+              resultTitle.innerText = "Résultat :";
+
+              imgContainer.appendChild(resultTitle);
+              imgContainer.appendChild(processedImg);
+          })
+          .catch(error => {
+              console.error("Erreur lors de l'envoi de l'image :", error);
+          });
+
+        }
+        
+    });
+
+    
+    </script>
+    
+</body>
+</html>
