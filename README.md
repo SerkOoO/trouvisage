@@ -1,4 +1,4 @@
-﻿# 🙂 TrouveVisage
+﻿# 🙂 Trouvisage
 
 TrouveVisage est un mini projet qui permet de détécter des visages dans des images.
 
