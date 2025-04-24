@@ -12,7 +12,7 @@ TrouveVisage est un mini projet qui permet de détécter des visages dans des im
 
 ```bash
 git clone https://github.com/SerkOoO/trouvisage.git
-cd trouvevisage
+cd trouvisage
 pip install -r requirements.txt
 fastapi dev main.py
 ```
