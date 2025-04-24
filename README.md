@@ -25,8 +25,8 @@ fastapi dev main.py
 
 Avec Docker 🐳
 ```bash
-docker build -t trouvevisage .
-docker run -p 5000:5000 trouvevisage
+docker build -t trouvisage .
+docker run -p 5000:5000 trouvisage
 ```
 
 @SerkOoO
